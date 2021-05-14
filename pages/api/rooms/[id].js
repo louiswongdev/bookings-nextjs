@@ -2,16 +2,18 @@ import nc from 'next-connect';
 
 import dbConnect from '../../../backend/config/dbConnect';
 import {
-  allRooms,
-  newRoom,
+  getSingleRoom,
+  updateRoom,
 } from '../../../backend/controllers/roomControllers';
 
 const handler = nc();
 
 dbConnect();
 
-handler.get(allRooms);
+// get single room
+handler.get(getSingleRoom);
 
-handler.post(newRoom);
+// update room details
+handler.put(updateRoom);
 
 export default handler;
