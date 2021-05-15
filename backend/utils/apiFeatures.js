@@ -20,19 +20,18 @@ class APIFeatures {
   }
 
   filter() {
-    const queryCopy = { ...this.queryStr };
+    const removeProperties = ({ location, page, ...rest }) => rest;
 
-    console.log(queryCopy);
+    this.query = this.query.find(removeProperties(this.queryStr));
+    return this;
+  }
 
-    // Remove fields from query
-    // i.e if we're adding a filter, we want to remove 'location' since that is not a property on Room
-    // http:localhost:3000/api/rooms?location=New York&category=twins
-    const removeFields = ['location'];
-    removeFields.forEach(el => delete queryCopy[el]);
+  pagination(resPerPage) {
+    const currentPage = Number(this.queryStr.page) || 1;
+    const skip = resPerPage * (currentPage - 1);
 
-    console.log(queryCopy);
+    this.query = this.query.limit(resPerPage).skip(skip);
 
-    this.query = this.query.find(queryCopy);
     return this;
   }
 }
