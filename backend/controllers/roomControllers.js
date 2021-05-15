@@ -2,12 +2,19 @@ const mongoose = require('mongoose');
 
 import Room from '../models/room';
 
-import ErrorHandler from '../../utils/errorHandler';
+import ErrorHandler from '../utils/errorHandler';
 import catchAsyncErrors from '../middlewares/catchAsyncErrors';
+import APIFeatures from '../utils/apiFeatures';
 
 // get all room  =>  /api/rooms
 const allRooms = catchAsyncErrors(async (req, res) => {
-  const rooms = await Room.find();
+  const apiFeatures = new APIFeatures(Room.find(), req.query)
+    .search()
+    .filter();
+
+  const rooms = await apiFeatures.query;
+
+  // const rooms = await Room.find();
 
   res.status(200).json({ success: true, count: rooms.length, rooms });
 });

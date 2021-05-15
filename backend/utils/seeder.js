@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 // const dbConnect = require('../backend/config/dbConnect');
-const Room = require('../backend/models/room');
-const roomsData = require('../backend/data/rooms');
+const Room = require('../models/room');
+const roomsData = require('../data/rooms');
 
 mongoose.connect('mongodb://localhost:27017/bookit', {
   useNewUrlParser: true,
