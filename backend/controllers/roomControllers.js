@@ -8,7 +8,7 @@ import APIFeatures from '../utils/apiFeatures';
 
 // get all room  =>  /api/rooms
 const allRooms = catchAsyncErrors(async (req, res) => {
-  const resPerPage = 4;
+  const resPerPage = 2;
   const roomsCount = await Room.countDocuments();
 
   const apiFeatures = new APIFeatures(Room.find(), req.query)
