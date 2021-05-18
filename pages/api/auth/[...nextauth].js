@@ -34,7 +34,7 @@ export default NextAuth({
           throw new Error('Invalid email or password');
         }
 
-        return Promise.revolve(user);
+        return Promise.resolve(user);
       },
     }),
   ],
