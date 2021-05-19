@@ -34,7 +34,14 @@ export default NextAuth({
           throw new Error('Invalid email or password');
         }
 
-        return Promise.resolve(user);
+        // convert to JSON to get rid of mongoose object properties
+        const newUser = { ...user.toJSON() };
+
+        // remove password property from user obj before sending to JWT callback
+        const noPassword = ({ password, ...rest }) => rest;
+        const userWithoutPassword = noPassword(newUser);
+
+        return Promise.resolve(userWithoutPassword);
       },
     }),
   ],
