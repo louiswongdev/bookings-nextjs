@@ -57,4 +57,48 @@ const currentUserProfile = catchAsyncErrors(async (req, res) => {
   });
 });
 
-export { registerUser, currentUserProfile };
+// update user profile  =>  /api/me/update
+const updateProfile = catchAsyncErrors(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  console.log('user:', user);
+
+  if (user) {
+    user.name = req.body.name;
+    user.email = req.body.email;
+  }
+
+  // update password if present in req.body
+  if (req.body.password) {
+    user.password = req.body.password;
+  }
+
+  // update avatar
+  if (req.body.avatar !== '') {
+    const image_id = user.avatar.public_id;
+
+    // delete prev user image/avatar (but only if not default system avatar)
+    if (image_id !== 'bookit/avatars/default_avatar_q5fq5h')
+      await cloudinary.v2.uploader.destroy(image_id);
+
+    // upload new image
+    const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
+      folder: 'bookit/avatars',
+      width: '150',
+      crop: 'scale',
+    });
+
+    user.avatar = {
+      public_id: result.public_id,
+      url: result.secure_url,
+    };
+  }
+
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+  });
+});
+
+export { registerUser, currentUserProfile, updateProfile };

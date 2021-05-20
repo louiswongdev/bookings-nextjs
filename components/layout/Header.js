@@ -10,8 +10,10 @@ const Header = () => {
   const { user, loading } = useSelector(state => state.auth);
 
   useEffect(() => {
-    dispatch(loadUser());
-  }, []);
+    if (!user) {
+      dispatch(loadUser());
+    }
+  }, [user]);
 
   const logoutHandler = () => {
     signOut();
