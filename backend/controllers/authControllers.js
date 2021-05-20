@@ -14,11 +14,20 @@ cloudinary.config({
 
 // register user  =>  /api/auth/register
 const registerUser = catchAsyncErrors(async (req, res) => {
-  const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
-    folder: 'bookit/avatars',
-    width: '150',
-    crop: 'scale',
-  });
+  let result = {};
+
+  // if user hasn't uploaded avatar on register page, assign default avatar
+  if (req.body.avatar === null) {
+    result.secure_url =
+      'https://res.cloudinary.com/lwprojects/image/upload/v1621454892/bookit/avatars/default_avatar_q5fq5h.jpg';
+    result.public_id = 'bookit/avatars/default_avatar_q5fq5h';
+  } else {
+    result = await cloudinary.v2.uploader.upload(req.body.avatar, {
+      folder: 'bookit/avatars',
+      width: '150',
+      crop: 'scale',
+    });
+  }
 
   const { name, email, password } = req.body;
 
