@@ -15,7 +15,7 @@ import {
   FORGOT_PASSWORD_FAIL,
   RESET_PASSWORD_REQUEST,
   RESET_PASSWORD_SUCCESS,
-  RESET_PASSWORD_FAIL,
+  // RESET_PASSWORD_FAIL,
   CLEAR_ERRORS,
 } from '../constants/userConstants';
 
@@ -74,8 +74,6 @@ export const updateProfile = userData => async dispatch => {
     };
 
     const { data } = await axios.put('/api/me/update', userData, config);
-
-    console.log(data);
 
     dispatch({
       type: UPDATE_PROFILE_SUCCESS,

@@ -7,6 +7,7 @@ import {
 
 import {
   authReducer,
+  loadedUserReducer,
   userReducer,
   forgotPasswordReducer,
 } from '../reducers/userReducer';
@@ -16,6 +17,7 @@ const reducer = combineReducers({
   roomDetails: roomDetailsReducer,
   auth: authReducer,
   user: userReducer,
+  loadedUser: loadedUserReducer,
   forgotPassword: forgotPasswordReducer,
 });
 
