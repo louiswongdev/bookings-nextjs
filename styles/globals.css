@@ -200,6 +200,9 @@ body {
 }
 
 /* Navbar */
+.navbar {
+  height: 78px;
+}
 nav {
   background-color: white;
   padding: 1rem 1rem;

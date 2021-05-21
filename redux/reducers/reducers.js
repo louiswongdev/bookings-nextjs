@@ -5,13 +5,18 @@ import {
   roomDetailsReducer,
 } from '../reducers/roomReducers';
 
-import { authReducer, userReducer } from '../reducers/userReducer';
+import {
+  authReducer,
+  userReducer,
+  forgotPasswordReducer,
+} from '../reducers/userReducer';
 
 const reducer = combineReducers({
   allRooms: allRoomsReducer,
   roomDetails: roomDetailsReducer,
   auth: authReducer,
   user: userReducer,
+  forgotPassword: forgotPasswordReducer,
 });
 
 export default reducer;
