@@ -1,7 +1,11 @@
-import Booking from '../models/booking';
+import Moment from 'moment';
+import { extendMoment } from 'moment-range';
 
+import Booking from '../models/booking';
 import ErrorHandler from '../utils/errorHandler';
 import catchAsyncErrors from '../middlewares/catchAsyncErrors';
+
+const moment = extendMoment(Moment);
 
 // create new booking  =>  /api/bookings
 const newBooking = catchAsyncErrors(async (req, res) => {
@@ -44,8 +48,6 @@ const checkRoomBookingAvailability = catchAsyncErrors(async (req, res) => {
   proposedCheckInDate = new Date(proposedCheckInDate);
   proposedCheckoutDate = new Date(proposedCheckoutDate);
 
-  console.log(proposedCheckInDate, proposedCheckoutDate);
-
   const booking = await Booking.find({
     room: roomId,
     $and: [
@@ -63,8 +65,6 @@ const checkRoomBookingAvailability = catchAsyncErrors(async (req, res) => {
     ],
   });
 
-  console.log(booking);
-
   let isAvailable;
 
   booking && booking.length === 0
@@ -77,10 +77,46 @@ const checkRoomBookingAvailability = catchAsyncErrors(async (req, res) => {
   });
 });
 
+// check booked dates of a room  =>  /api/bookings/check_booked_dates
+const checkBookedDatesOfRoom = catchAsyncErrors(async (req, res) => {
+  const { roomId } = req.query;
+
+  const bookings = await Booking.find({ room: roomId });
+
+  let bookedDates = [];
+
+  // get the time difference in hours between my time zone and UTC
+  // this will eliminate issues of issues with check-in days showing +1 if
+  // close to midnight
+  const timeDifference = moment().utcOffset() / 60;
+
+  bookings.forEach(booking => {
+    const checkInDate = moment(booking.checkInDate).add(
+      timeDifference,
+      'hours',
+    );
+    const checkOutDate = moment(booking.checkOutDate).add(
+      timeDifference,
+      'hours',
+    );
+
+    const range = moment.range(moment(checkInDate), moment(checkOutDate));
+
+    const dates = Array.from(range.by('day'));
+
+    bookedDates = bookedDates.concat(dates);
+  });
+
+  res.status(200).json({
+    success: true,
+    bookedDates,
+  });
+});
+
 export {
   newBooking,
   checkRoomBookingAvailability,
-  // checkBookedDatesOfRoom,
+  checkBookedDatesOfRoom,
   // myBookings,
   // getBookingDetails,
   // allAdminBookings,
