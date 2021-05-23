@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/client';
 
 import { toast } from 'react-toastify';
 import ButtonLoader from '../layout/ButtonLoader';
@@ -12,6 +13,9 @@ import { UPDATE_PROFILE_RESET } from '../../redux/constants/userConstants';
 const Profile = () => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const [session, loading] = useSession();
+
+  const { user: loadedUser } = session;
 
   const [user, setUser] = useState({
     name: '',
@@ -26,9 +30,9 @@ const Profile = () => {
     '/images/default_avatar.jpeg',
   );
 
-  const { user: loadedUser, loading } = useSelector(
-    state => state.loadedUser,
-  );
+  // const { user: loadedUser, loading } = useSelector(
+  //   state => state.loadedUser,
+  // );
   const {
     error,
     isUpdated,

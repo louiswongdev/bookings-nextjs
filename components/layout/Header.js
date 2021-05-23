@@ -1,19 +1,25 @@
 import Link from 'next/link';
 import React, { useEffect } from 'react';
+import { useSession } from 'next-auth/client';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { loadUser } from '../../redux/actions/userActions';
 import { signOut } from 'next-auth/client';
 
 const Header = () => {
-  const dispatch = useDispatch();
-  const { user, loading } = useSelector(state => state.loadedUser);
+  // const dispatch = useDispatch();
+  // const { user, loading } = useSelector(state => state.loadedUser);
+  const [session, loading] = useSession();
 
-  useEffect(() => {
-    if (!user) {
-      dispatch(loadUser());
-    }
-  }, [user]);
+  // if (!session) return <></>;
+
+  // const { user } = session;
+
+  // useEffect(() => {
+  //   if (!user) {
+  //     dispatch(loadUser());
+  //   }
+  // }, [dispatch, user]);
 
   const logoutHandler = () => {
     signOut();
@@ -37,7 +43,7 @@ const Header = () => {
         </div>
 
         <div className="col-3 mt-3 mt-md-0 text-center">
-          {user ? (
+          {session?.user ? (
             <div className="ml-4 dropdown d-line">
               <a
                 className="btn dropdown-toggle mr-4"
@@ -49,15 +55,15 @@ const Header = () => {
                 <figure className="avatar avatar-nav">
                   <img
                     src={
-                      user.avatar
-                        ? user.avatar.url
+                      session?.user.avatar
+                        ? session?.user.avatar.url
                         : '/images/default_avatar.jpeg'
                     }
-                    alt={user && user.name}
+                    alt={session?.user && session?.user.name}
                     className="rounded-circle"
                   />
                 </figure>
-                <span>{user && user.name}</span>
+                <span>{session?.user && session?.user.name}</span>
               </a>
 
               <div

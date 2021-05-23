@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/client';
 import Head from 'next/head';
 import { Carousel } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
@@ -24,8 +25,12 @@ const RoomDetails = () => {
   const [daysOfStay, setDaysOfStay] = useState();
   const dispatch = useDispatch();
   const router = useRouter();
+  const [session, loading] = useSession();
+
+  const { user } = session;
+
   const { room, error } = useSelector(state => state.roomDetails);
-  const { user } = useSelector(state => state.loadedUser);
+  // const { user } = useSelector(state => state.loadedUser);
   const { dates } = useSelector(state => state.bookedDates);
   const { available, loading: bookingLoading } = useSelector(
     state => state.checkBooking,
@@ -37,8 +42,6 @@ const RoomDetails = () => {
   dates.forEach(date => {
     excludedDates.push(new Date(date));
   });
-
-  console.log(excludedDates);
 
   useEffect(() => {
     dispatch(getBookedDates(roomId));
@@ -95,8 +98,6 @@ const RoomDetails = () => {
       };
 
       const { data } = await axios.post('/api/bookings', bookingData, config);
-
-      console.log(data);
     } catch (error) {
       console.log(error.response);
     }

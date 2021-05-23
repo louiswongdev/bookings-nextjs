@@ -50,19 +50,18 @@ export const authReducer = (state = { user: null }, action) => {
 };
 
 // load user reducer
-export const loadedUserReducer = (
-  state = { loading: true, user: null },
-  action,
-) => {
+export const loadedUserReducer = (state = { loading: true }, action) => {
   switch (action.type) {
     case LOAD_USER_REQUEST:
       return {
+        ...state,
         loading: true,
         isAuthenticated: false,
       };
 
     case LOAD_USER_SUCCESS:
       return {
+        ...state,
         loading: false,
         isAuthenticated: true,
         user: action.payload,
@@ -70,6 +69,7 @@ export const loadedUserReducer = (
 
     case LOAD_USER_FAIL:
       return {
+        ...state,
         loading: false,
         isAuthenticated: false,
         error: action.payload,

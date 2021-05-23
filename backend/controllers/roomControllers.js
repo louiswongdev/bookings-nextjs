@@ -74,7 +74,6 @@ const updateRoom = catchAsyncErrors(async (req, res) => {
 
 // Delete room details  =>  /api/rooms/:id
 const deleteRoom = catchAsyncErrors(async (req, res) => {
-  console.log(req.query.id);
   // const roomId = mongoose.Types.ObjectId(req.query.id);
 
   const room = await Room.findById(req.query.id);

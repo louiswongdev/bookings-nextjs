@@ -51,6 +51,7 @@ const registerUser = catchAsyncErrors(async (req, res) => {
 
 // current user profile  =>  /api/me
 const currentUserProfile = catchAsyncErrors(async (req, res) => {
+  console.log('running again! --------------');
   const user = await User.findById(req.user._id);
 
   res.status(200).json({
