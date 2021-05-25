@@ -123,12 +123,30 @@ const myBookings = catchAsyncErrors(async (req, res) => {
   });
 });
 
+// get booking details  =>  /api/bookings/:id
+const getBookingDetails = catchAsyncErrors(async (req, res) => {
+  const bookings = await Booking.findById(req.query.id)
+    .populate({
+      path: 'room',
+      select: 'name pricePerNight images',
+    })
+    .populate({
+      path: 'user',
+      select: 'name email',
+    });
+
+  res.status(200).json({
+    success: true,
+    bookings,
+  });
+});
+
 export {
   newBooking,
   checkRoomBookingAvailability,
   checkBookedDatesOfRoom,
   myBookings,
-  // getBookingDetails,
+  getBookingDetails,
   // allAdminBookings,
   // deleteBooking
 };

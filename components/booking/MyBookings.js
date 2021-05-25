@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { MDBDataTable } from 'mdbreact';
 
-import { clearErrors, myBookings } from '../../redux/actions/bookingActions';
+import { clearErrors } from '../../redux/actions/bookingActions';
 
 const MyBookings = () => {
   const dispatch = useDispatch();
