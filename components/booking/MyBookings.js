@@ -17,7 +17,7 @@ const MyBookings = () => {
       toast.error(error);
       dispatch(clearErrors());
     }
-  }, []);
+  }, [dispatch, error]);
 
   const setBookings = () => {
     const data = {

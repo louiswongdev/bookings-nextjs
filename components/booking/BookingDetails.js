@@ -17,7 +17,7 @@ const BookingDetails = () => {
       toast.error(error);
       dispatch(clearErrors());
     }
-  }, []);
+  }, [dispatch, error]);
 
   return (
     <div className="container">
