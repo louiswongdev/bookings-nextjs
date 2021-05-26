@@ -19,6 +19,7 @@ import {
 import { CHECK_BOOKING_RESET } from '../../redux/constants/bookingConstants';
 import RoomFeatures from './RoomFeatures';
 import getStripe from '../../utils/getStripe';
+import NewReview from '../review/NewReview';
 
 const RoomDetails = () => {
   const [checkInDate, setCheckInDate] = useState();
@@ -230,6 +231,8 @@ const RoomDetails = () => {
             </div>
           </div>
         </div>
+
+        <NewReview />
 
         <div className="reviews w-75">
           <h3>Reviews:</h3>

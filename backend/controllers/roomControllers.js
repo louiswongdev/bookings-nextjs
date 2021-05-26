@@ -55,7 +55,7 @@ const newRoom = catchAsyncErrors(async (req, res) => {
 });
 
 // Update room details  =>  /api/rooms/:id
-const updateRoom = catchAsyncErrors(async (req, res) => {
+const updateRoom = catchAsyncErrors(async (req, res, next) => {
   // const roomId = mongoose.Types.ObjectId(req.query.id);
   let room = await Room.findById(req.query.id);
 
@@ -73,7 +73,7 @@ const updateRoom = catchAsyncErrors(async (req, res) => {
 });
 
 // Delete room details  =>  /api/rooms/:id
-const deleteRoom = catchAsyncErrors(async (req, res) => {
+const deleteRoom = catchAsyncErrors(async (req, res, next) => {
   // const roomId = mongoose.Types.ObjectId(req.query.id);
 
   const room = await Room.findById(req.query.id);
@@ -87,4 +87,58 @@ const deleteRoom = catchAsyncErrors(async (req, res) => {
   res.status(200).json({ success: true, message: 'Room has been deleted' });
 });
 
-export { allRooms, newRoom, getSingleRoom, updateRoom, deleteRoom };
+// create new review  =>  /api/reviews
+const createRoomReview = catchAsyncErrors(async (req, res, next) => {
+  const { rating, comment, roomId } = req.body;
+
+  const review = {
+    user: req.user._id,
+    name: req.user.name,
+    rating: Number(rating),
+    comment,
+  };
+
+  const room = await Room.findById(roomId);
+
+  if (!room) {
+    return next(new ErrorHandler('Room not found with this ID', 404));
+  }
+
+  // check if user has reviewed room already
+  const isReviewed = room.reviews.find(
+    r => r.user.toString() === req.user._id.toString(),
+  );
+
+  // user has already reviewed room
+  if (isReviewed) {
+    // update the comment and rating
+    room.reviews.forEach(review => {
+      if (review.user.toString() === req.user._id.toString()) {
+        review.comment = comment;
+        review.rating = rating;
+      }
+    });
+  } else {
+    // first time user is review room
+    room.reviews.push(review);
+    room.numOfReviews = room.reviews.length;
+  }
+
+  // get avg rating of all the reviews of the room
+  room.ratings =
+    room.reviews.reduce((acc, item) => item.rating + acc, 0) /
+    room.reviews.length;
+
+  await room.save({ validateBeforeSave: false });
+
+  res.status(200).json({ success: true });
+});
+
+export {
+  allRooms,
+  newRoom,
+  getSingleRoom,
+  updateRoom,
+  deleteRoom,
+  createRoomReview,
+};

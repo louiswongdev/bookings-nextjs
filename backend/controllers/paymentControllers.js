@@ -21,6 +21,9 @@ const stripeCheckoutSession = catchAsyncErrors(async (req, res) => {
   // get origin
   const { origin } = absoluteUrl(req);
 
+  const checkIn = new Date(checkInDate).toDateString();
+  const checkOut = new Date(checkOutDate).toDateString();
+
   // create stripe checkout session
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
@@ -32,6 +35,7 @@ const stripeCheckoutSession = catchAsyncErrors(async (req, res) => {
     line_items: [
       {
         name: room.name,
+        description: `${checkIn} - ${checkOut}`,
         images: [`${room.images[0].url}`],
         amount: req.query.amount * 100,
         currency: 'usd',
