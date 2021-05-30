@@ -63,8 +63,6 @@ const NewRoom = () => {
 
     if (images.length === 0) return toast.error('Please upload images.');
 
-    console.log(roomData);
-
     dispatch(newRoom(roomData));
   };
 

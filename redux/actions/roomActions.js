@@ -60,7 +60,15 @@ export const getRoomDetails = (req, id) => async dispatch => {
   try {
     const { origin } = absoluteUrl(req);
 
-    const { data } = await axios.get(`${origin}/api/rooms/${id}`);
+    let url;
+
+    if (req) {
+      url = `${origin}/api/rooms/${id}`;
+    } else {
+      url = `/api/rooms/${id}`;
+    }
+
+    const { data } = await axios.get(url);
 
     dispatch({
       type: ROOM_DETAILS_SUCCESS,
