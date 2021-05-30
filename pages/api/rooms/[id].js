@@ -9,6 +9,11 @@ import {
 
 import onError from '../../../backend/middlewares/errors';
 
+import {
+  isAuthenticatedUser,
+  authorizeRoles,
+} from '../../../backend/middlewares/auth';
+
 const handler = nc({ onError });
 
 dbConnect();
@@ -17,9 +22,9 @@ dbConnect();
 handler.get(getSingleRoom);
 
 // update room details
-handler.put(updateRoom);
+handler.use(isAuthenticatedUser, authorizeRoles('admin')).put(updateRoom);
 
 // delete room
-handler.delete(deleteRoom);
+handler.use(isAuthenticatedUser, authorizeRoles('admin')).delete(deleteRoom);
 
 export default handler;

@@ -7,13 +7,25 @@ import {
 } from '../../../backend/controllers/roomControllers';
 
 import onError from '../../../backend/middlewares/errors';
+import {
+  isAuthenticatedUser,
+  authorizeRoles,
+} from '../../../backend/middlewares/auth';
 
 const handler = nc({ onError });
 
 dbConnect();
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '5mb',
+    },
+  },
+};
+
 handler.get(allRooms);
 
-handler.post(newRoom);
+handler.use(isAuthenticatedUser, authorizeRoles('admin')).post(newRoom);
 
 export default handler;

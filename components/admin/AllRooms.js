@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 import { MDBDataTable } from 'mdbreact';
+
 import Loader from '../layout/Loader';
-import easyinvoice from 'easyinvoice';
 import { getAdminRooms, clearErrors } from '../../redux/actions/roomActions';
 
 const AllRooms = () => {
@@ -87,7 +87,17 @@ const AllRooms = () => {
         <Loader />
       ) : (
         <>
-          <h1 className="my-5">{`${rooms && rooms.length} Rooms`}</h1>
+          <h1 className="my-5">
+            {`${rooms && rooms.length} Rooms`}
+            <Link href="/admin/rooms/new">
+              <a
+                href=""
+                className="mt-0 btn text-white float-right new-room-btn"
+              >
+                Create Room
+              </a>
+            </Link>
+          </h1>
 
           <MDBDataTable
             data={setRooms()}

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import cloudinary from 'cloudinary';
 
 import Room from '../models/room';
 import Booking from '../models/booking';
@@ -50,6 +50,26 @@ const getSingleRoom = catchAsyncErrors(async (req, res, next) => {
 
 // create new room  =>  /api/rooms
 const newRoom = catchAsyncErrors(async (req, res) => {
+  const images = req.body.images;
+
+  let imagesLinks = [];
+
+  for (let i = 0; i < images.length; i++) {
+    const result = await cloudinary.v2.uploader.upload(images[i], {
+      folder: 'bookit/rooms',
+      // width: '150',
+      // crop: 'scale',
+    });
+
+    imagesLinks.push({
+      public_id: result.public_id,
+      url: result.secure_url,
+    });
+  }
+
+  req.body.images = imagesLinks;
+  req.body.user = req.user._id;
+
   const room = await Room.create(req.body);
 
   res.status(200).json({ success: true, room });
@@ -62,6 +82,29 @@ const updateRoom = catchAsyncErrors(async (req, res, next) => {
 
   if (!room) {
     return next(new ErrorHandler('Room not found with this ID', 404));
+  }
+
+  if (req.body.images) {
+    // delete images associated with room
+    for (let i = 0; i < room.images.length; i++) {
+      await cloudinary.v2.uploader.destroy(room.images[i].public_id);
+    }
+
+    let imagesLinks = [];
+    const images = req.body.images;
+
+    for (let i = 0; i < images.length; i++) {
+      const result = await cloudinary.v2.uploader.upload(images[i], {
+        folder: 'bookit/rooms',
+      });
+
+      imagesLinks.push({
+        public_id: result.public_id,
+        url: result.secure_url,
+      });
+    }
+
+    req.body.images = imagesLinks;
   }
 
   room = await Room.findByIdAndUpdate(req.query.id, req.body, {

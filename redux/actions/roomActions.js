@@ -8,7 +8,6 @@ import {
   ROOM_DETAILS_FAIL,
   NEW_REVIEW_REQUEST,
   NEW_REVIEW_SUCCESS,
-  NEW_REVIEW_RESET,
   NEW_REVIEW_FAIL,
   CLEAR_ERRORS,
   REVIEW_AVAILABILITY_REQUEST,
@@ -17,6 +16,17 @@ import {
   ADMIN_ROOMS_REQUEST,
   ADMIN_ROOMS_SUCCESS,
   ADMIN_ROOMS_FAIL,
+  NEW_ROOM_REQUEST,
+  NEW_ROOM_SUCCESS,
+  NEW_ROOM_FAIL,
+  UPDATE_ROOM_REQUEST,
+  UPDATE_ROOM_SUCCESS,
+  UPDATE_ROOM_RESET,
+  UPDATE_ROOM_FAIL,
+  DELETE_ROOM_REQUEST,
+  DELETE_ROOM_SUCCESS,
+  DELETE_ROOM_RESET,
+  DELETE_ROOM_FAIL,
 } from '../constants/roomConstants';
 
 // Get all rooms
@@ -78,6 +88,55 @@ export const getAdminRooms = () => async dispatch => {
   } catch (error) {
     dispatch({
       type: ADMIN_ROOMS_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
+
+// create new room
+export const newRoom = roomData => async dispatch => {
+  try {
+    dispatch({ type: NEW_ROOM_REQUEST });
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+
+    const { data } = await axios.post(`/api/rooms`, roomData, config);
+
+    dispatch({
+      type: NEW_ROOM_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: NEW_ROOM_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const updateRoom = (id, roomData) => async dispatch => {
+  try {
+    dispatch({ type: UPDATE_ROOM_REQUEST });
+
+    const config = {
+      header: {
+        'Content-Type': 'application/json',
+      },
+    };
+
+    const { data } = await axios.put(`/api/rooms/${id}`, roomData, config);
+
+    dispatch({
+      type: UPDATE_ROOM_SUCCESS,
+      payload: data.success,
+    });
+  } catch (error) {
+    dispatch({
+      type: UPDATE_ROOM_FAIL,
       payload: error.response.data.message,
     });
   }

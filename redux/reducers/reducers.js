@@ -3,8 +3,10 @@ import { combineReducers } from 'redux';
 import {
   allRoomsReducer,
   roomDetailsReducer,
+  newRoomReducer,
   newReviewReducer,
   checkReviewReducer,
+  roomReducer,
 } from './roomReducers';
 
 import {
@@ -23,7 +25,9 @@ import {
 
 const reducer = combineReducers({
   allRooms: allRoomsReducer,
+  newRoom: newRoomReducer,
   roomDetails: roomDetailsReducer,
+  room: roomReducer,
   auth: authReducer,
   user: userReducer,
   loadedUser: loadedUserReducer,
