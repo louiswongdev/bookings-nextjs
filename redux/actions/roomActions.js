@@ -175,6 +175,26 @@ export const newReview = reviewData => async dispatch => {
   }
 };
 
+// delete rooms
+export const deleteRoom = id => async dispatch => {
+  console.log('id from room', id);
+  try {
+    dispatch({ type: DELETE_ROOM_REQUEST });
+
+    const { data } = await axios.delete(`/api/rooms/${id}`);
+
+    dispatch({
+      type: DELETE_ROOM_SUCCESS,
+      payload: data.success,
+    });
+  } catch (error) {
+    dispatch({
+      type: DELETE_ROOM_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
+
 // check if user can leave a review
 export const checkReviewAvailability = roomId => async dispatch => {
   try {
