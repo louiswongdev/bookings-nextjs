@@ -1,23 +1,47 @@
 import React, { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { MDBDataTable } from 'mdbreact';
 import easyinvoice from 'easyinvoice';
 
-import { clearErrors } from '../../redux/actions/bookingActions';
+import Loader from '../layout/Loader';
 
-const MyBookings = () => {
+import {
+  getAdminBookings,
+  deleteBooking,
+  clearErrors,
+} from '../../redux/actions/bookingActions';
+
+import { DELETE_BOOKING_RESET } from '../../redux/constants/bookingConstants';
+
+const AllBookings = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
 
-  const { bookings, error } = useSelector(state => state.bookings);
+  const { bookings, error, loading } = useSelector(state => state.bookings);
+  const { isDeleted, error: deleteError } = useSelector(
+    state => state.booking,
+  );
 
   useEffect(() => {
+    dispatch(getAdminBookings());
     if (error) {
       toast.error(error);
       dispatch(clearErrors());
     }
-  }, [dispatch, error]);
+
+    if (deleteError) {
+      toast.error(error);
+      dispatch(clearErrors());
+    }
+
+    if (isDeleted) {
+      router.push('/admin/bookings');
+      dispatch({ type: DELETE_BOOKING_RESET });
+    }
+  }, [deleteError, dispatch, error, isDeleted, router]);
 
   const setBookings = () => {
     const data = {
@@ -71,6 +95,13 @@ const MyBookings = () => {
                 onClick={() => downloadInvoice(booking)}
               >
                 <i className="fa fa-download"></i>
+              </button>
+
+              <button
+                className="btn btn-danger mx-2"
+                onClick={() => deleteBookingHandler(booking._id)}
+              >
+                <i className="fa fa-trash"></i>
               </button>
             </>
           ),
@@ -126,19 +157,31 @@ const MyBookings = () => {
     easyinvoice.download(`invoice_${booking._id}.pdf`, result.pdf);
   };
 
+  const deleteBookingHandler = id => {
+    dispatch(deleteBooking(id));
+  };
+
   return (
     <div className="container container-fluid">
-      <h1 className="my-5">My Bookings</h1>
+      {loading ? (
+        <Loader />
+      ) : (
+        <>
+          <h1 className="my-5">{`${
+            bookings && bookings.length
+          } Bookings`}</h1>
 
-      <MDBDataTable
-        data={setBookings()}
-        className="px-3"
-        bordered
-        striped
-        hover
-      />
+          <MDBDataTable
+            data={setBookings()}
+            className="px-3"
+            bordered
+            striped
+            hover
+          />
+        </>
+      )}
     </div>
   );
 };
 
-export default MyBookings;
+export default AllBookings;
