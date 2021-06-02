@@ -84,7 +84,7 @@ const AllBookings = () => {
           amount: `$${booking.amountPaid}`,
           actions: (
             <>
-              <Link href={`/bookings/${booking._id}`}>
+              <Link href={`/admin/bookings/${booking._id}`}>
                 <a className="btn btn-primary">
                   <i className="fa fa-eye"></i>
                 </a>

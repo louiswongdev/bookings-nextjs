@@ -1,14 +1,16 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useSession } from 'next-auth/client';
 import Link from 'next/link';
 import Image from 'next/image';
 import { toast } from 'react-toastify';
-import { MDBDataTable } from 'mdbreact';
 
 import { clearErrors } from '../../redux/actions/bookingActions';
+import Loader from '../layout/Loader';
 
 const BookingDetails = () => {
   const dispatch = useDispatch();
+  const [session, loading] = useSession();
 
   const { booking, error } = useSelector(state => state.bookingDetails);
 
@@ -18,6 +20,13 @@ const BookingDetails = () => {
       dispatch(clearErrors());
     }
   }, [dispatch, error]);
+
+  const isPaid =
+    booking.paymentInfo && booking.paymentInfo.status === 'paid'
+      ? true
+      : false;
+
+  if (loading) return <Loader />;
 
   return (
     <div className="container">
@@ -56,9 +65,18 @@ const BookingDetails = () => {
               <hr />
 
               <h4 className="my-4">Payment Status</h4>
-              <p className="greenColor">
-                <b>Paid</b>
+              <p className={isPaid ? 'greenColor' : 'redColor'}>
+                <b>{isPaid ? 'Paid' : 'Not Paid'}</b>
               </p>
+
+              {session?.user && session?.user.role === 'admin' && (
+                <>
+                  <h4 className="my-4">Stripe Payment ID</h4>
+                  <p className="redColor">
+                    <b>{booking.paymentInfo.id}</b>
+                  </p>
+                </>
+              )}
 
               <h4 className="mt-5 mb-4">Booked Room:</h4>
 
