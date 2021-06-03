@@ -51,7 +51,6 @@ const registerUser = catchAsyncErrors(async (req, res) => {
 
 // current user profile  =>  /api/me
 const currentUserProfile = catchAsyncErrors(async (req, res) => {
-  console.log('running again! --------------');
   const user = await User.findById(req.user._id);
 
   res.status(200).json({
@@ -188,10 +187,56 @@ const resetPassword = catchAsyncErrors(async (req, res, next) => {
     .json({ success: true, message: 'Password has been updated' });
 });
 
+// get all users  =>  /api/admin/users
+const allAdminUsers = catchAsyncErrors(async (req, res) => {
+  const users = await User.find();
+
+  res.status(200).json({
+    success: true,
+    users,
+  });
+});
+
+// get user details  =>  /api/admin/users/:id
+const getUserDetails = catchAsyncErrors(async (req, res, next) => {
+  const user = await User.findById(req.query.id);
+
+  if (!user) {
+    return next(new ErrorHandler('User not found with this ID', 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
+
+// update user details  =>  /api/admin/users/:id
+const updateUserDetails = catchAsyncErrors(async (req, res, next) => {
+  const newUserData = {
+    name: req.body.name,
+    email: req.body.email,
+    role: req.body.role,
+  };
+
+  const user = await User.findByIdAndUpdate(req.query.id, newUserData, {
+    new: true,
+    runValidators: true,
+    useFindAndModify: false,
+  });
+
+  res.status(200).json({
+    success: true,
+  });
+});
+
 export {
   registerUser,
   currentUserProfile,
   updateProfile,
   forgotPassword,
   resetPassword,
+  allAdminUsers,
+  getUserDetails,
+  updateUserDetails,
 };
