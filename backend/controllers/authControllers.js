@@ -230,6 +230,27 @@ const updateUserDetails = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+// delete user  =>  /api/admin/users/:id
+const deleteUser = catchAsyncErrors(async (req, res, next) => {
+  const user = await User.findById(req.query.id);
+
+  if (!user) {
+    return next(new ErrorHandler('User not found with this ID', 404));
+  }
+
+  // remove avatar of deleted user
+  const image_id = user.avatar.public_id;
+  if (image_id !== 'bookit/avatars/default_avatar_q5fq5h')
+    await cloudinary.v2.uploader.destroy(image_id);
+
+  await user.remove();
+
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
+
 export {
   registerUser,
   currentUserProfile,
@@ -239,4 +260,5 @@ export {
   allAdminUsers,
   getUserDetails,
   updateUserDetails,
+  deleteUser,
 };

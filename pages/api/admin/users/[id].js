@@ -4,6 +4,7 @@ import dbConnect from '../../../../backend/config/dbConnect';
 import {
   getUserDetails,
   updateUserDetails,
+  deleteUser,
 } from '../../../../backend/controllers/authControllers';
 import {
   isAuthenticatedUser,
@@ -24,5 +25,10 @@ handler
 handler
   .use(isAuthenticatedUser, authorizeRoles('admin'))
   .put(updateUserDetails);
+
+// prettier-ignore
+handler
+  .use(isAuthenticatedUser, authorizeRoles('admin'))
+  .delete(deleteUser);
 
 export default handler;

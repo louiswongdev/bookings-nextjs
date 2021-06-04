@@ -44,15 +44,11 @@ const AllUsers = () => {
 
     if (isUpdated) {
       router.push('/admin/users');
+      dispatch(getUserDetails(userId));
       dispatch({ type: UPDATE_USER_RESET });
+      // dispatch({ type: USER_DETAILS_RESET });
     }
-
-    return () => {
-      if (isUpdated) {
-        dispatch({ type: USER_DETAILS_RESET });
-      }
-    };
-  }, [dispatch, error, isUpdated, userId, user, router]);
+  }, [dispatch, error, isUpdated, router, user, userId]);
 
   const submitHandler = e => {
     e.preventDefault();
