@@ -175,7 +175,6 @@ export const getAdminUsers = () => async dispatch => {
 
 // get user details
 export const getUserDetails = id => async dispatch => {
-  console.log('callllledddd');
   try {
     dispatch({ type: USER_DETAILS_REQUEST });
 
