@@ -59,7 +59,7 @@ const webhookCheckout = catchAsyncErrors(async (req, res) => {
     const event = stripe.webhooks.constructEvent(
       rawBody,
       signature,
-      process.env.STRIPE_WEBHOOK_SECRET,
+      `${process.env.STRIPE_WEBHOOK_SECRET}`,
     );
 
     if (event.type === 'checkout.session.completed') {
