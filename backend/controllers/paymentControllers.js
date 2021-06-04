@@ -9,7 +9,7 @@ import Booking from '../models/booking';
 import catchAsyncErrors from '../middlewares/catchAsyncErrors';
 import APIFeatures from '../utils/apiFeatures';
 
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const stripe = require('stripe')(`${process.env.STRIPE_SECRET_KEY}`);
 
 // Generate stripe checkout session  ==>  /api/checkout_session/:roomId
 const stripeCheckoutSession = catchAsyncErrors(async (req, res) => {
