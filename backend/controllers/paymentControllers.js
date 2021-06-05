@@ -21,6 +21,8 @@ const stripeCheckoutSession = catchAsyncErrors(async (req, res) => {
   // get origin
   const { origin } = absoluteUrl(req);
 
+  console.log('origin url: ', origin);
+
   const checkIn = new Date(checkInDate).toDateString();
   const checkOut = new Date(checkOutDate).toDateString();
 
