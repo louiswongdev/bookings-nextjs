@@ -96,6 +96,9 @@ const RoomDetails = () => {
 
       const stripe = await getStripe();
 
+      console.log('data from session: ', data);
+      console.log('stripe object: ', stripe);
+
       // redirect to stripe's checkout page
       stripe.redirectToCheckout({ sessionId: data.id });
 

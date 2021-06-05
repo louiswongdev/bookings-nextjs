@@ -21,32 +21,38 @@ const stripeCheckoutSession = catchAsyncErrors(async (req, res) => {
   // get origin
   const { origin } = absoluteUrl(req);
 
-  console.log('origin url: ', origin);
-
   const checkIn = new Date(checkInDate).toDateString();
   const checkOut = new Date(checkOutDate).toDateString();
 
-  // create stripe checkout session
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ['card'],
-    success_url: `${origin}/bookings/me`,
-    cancel_url: `${origin}/room/${room._id}`,
-    customer_email: req.user.email,
-    client_reference_id: req.query.roomId,
-    metadata: { checkInDate, checkOutDate, daysOfStay },
-    line_items: [
-      {
-        name: room.name,
-        description: `${checkIn} - ${checkOut}`,
-        images: [`${room.images[0].url}`],
-        amount: req.query.amount * 100,
-        currency: 'usd',
-        quantity: 1,
-      },
-    ],
-  });
+  try {
+    // create stripe checkout session
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      success_url: `${origin}/bookings/me`,
+      cancel_url: `${origin}/room/${room._id}`,
+      customer_email: req.user.email,
+      client_reference_id: req.query.roomId,
+      metadata: { checkInDate, checkOutDate, daysOfStay },
+      line_items: [
+        {
+          name: room.name,
+          description: `${checkIn} - ${checkOut}`,
+          images: [`${room.images[0].url}`],
+          amount: req.query.amount * 100,
+          currency: 'usd',
+          quantity: 1,
+        },
+      ],
+    });
 
-  res.status(200).json(session);
+    res.status(200).json(session);
+  } catch (error) {
+    console.log(error);
+
+    res
+      .status(400)
+      .json({ error: 'an error occured while creating a session' });
+  }
 });
 
 // Create booking after payment  ==>  /api/webhook/
